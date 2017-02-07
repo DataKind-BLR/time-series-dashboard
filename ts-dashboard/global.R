@@ -4,7 +4,7 @@ library(fpp)
 library(lubridate)
 data <- list()
 data[["Top N Complaints"]] <-
-  "../../time-series/data/topNComplaints"
+  "/home/samarth/workspaces/datakind-ws/analytics/time-series/data/topNComplaints"
 
 loadData <- function(dataFolder) {
   print(paste0("Loading ", dataFolder))
