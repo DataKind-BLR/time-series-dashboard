@@ -1,6 +1,6 @@
 shinyUI(fluidPage(
   theme = shinythemes::shinytheme('cosmo'),
-  titlePanel("Egovernments TSM"),
+  titlePanel("DataKind-BLR Time Series Forecasting Tool"),
   sidebarLayout(sidebarPanel(
     width = 4,
     tabsetPanel(

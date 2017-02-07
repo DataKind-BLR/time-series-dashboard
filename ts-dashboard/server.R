@@ -10,6 +10,14 @@ shinyServer(function(input, output) {
   
   rValues <- reactiveValues()
   
+  getProcessedWithoutStl <- reactive({
+    monthly <- getData()
+    if (input$cleanOutliers) {
+      monthly <- tsclean(monthly)
+    }
+    monthly
+  })
+  
   getProcessed <- reactive({
     monthly <- getData()
     if (input$cleanOutliers) {
@@ -58,7 +66,7 @@ shinyServer(function(input, output) {
   })
   
   output$plotForecast <- renderPlot({
-    monthly <- getProcessed()
+    monthly <- getProcessedWithoutStl()
     
     trainStart <-
       c(year(input$trainRange[1]), month(input$trainRange[1]))
@@ -75,35 +83,56 @@ shinyServer(function(input, output) {
     rValues$trainData <- trainData
     rValues$testData <- testData
     
-    # ARIMA
-    if (input$method == "ARIMA") {
-      fit <- Arima(trainData,
-                   order = c(input$ARIMA.p, input$ARIMA.d, input$ARIMA.q))
-      forecasted <- forecast(fit, h = 12)
+    stl.period <- "periodic"
+    if (input$STL.Window > 0) {
+      stl.period <- input$STL.Window
     }
     
-    # Exponential Smoothing - ETS
-    else if (input$method == "Exponential Smoothing - ETS") {
-      # Adjusting the training data for value less than 1
-      # which will affect the multiplicative model
-      trainData_ets <- trainData
-      trainData_ets[trainData_ets < 1] <- 1
+    ts_model <- input$method
+    
+    if(ts_model == "ARIMA") {
+      order <- c(input$ARIMA.p, input$ARIMA.d, input$ARIMA.q)
+      model_function <- function(trainData) {
+        Arima(trainData, order = order)
+      }
       
-      model_type <-
-        paste0(
-          substr(input$error, 1, 1),
-          substr(input$trend, 1, 1),
-          substr(input$seasonality, 1, 1),
-          collapse = ""
-        )
-      print(model_type)
-      fit <-
-        ets(trainData_ets,
-            model = model_type,
-            damped = input$damping)
-      forecasted <- forecast.ets(fit, h = 12)
+      if(input$STL) {
+        model <- stlm(trainData,
+                      s.window = stl.period,
+                      modelfunction = model_function)
+      } else {
+        model <- model_function(trainData)
+      }
+    } else if (ts_model == "Exponential Smoothing - ETS") {
+      damped <- input$damping
+      ets.model <- paste0(
+        substr(input$error, 1, 1),
+        substr(input$trend, 1, 1),
+        substr(input$seasonality, 1, 1),
+        collapse = ""
+      )
+      
+      model_function <- function(y) {
+        min_ts_value <- min(y)
+        bias_value <- (-1 * min_ts_value) + 1
+        ES_series <- y + bias_value
+        ES_series[ES_series == 0] = 0.1
+        ets(ES_series,
+            model = ets.model,
+            damped = damped)
+      }
+      
+      if(input$STL) {
+        model <- stlm(trainData,
+                      s.window = stl.period,
+                      modelfunction = model_function)
+      } else {
+        model <- model_function(trainData)
+      }
     }
     
+    forecasted <- forecast(model,
+                            h=length(testData))
     rValues$forecasted <- forecasted
     plot.forecast(forecasted,
                   main = paste0("Forecasts for ", input$dataSet, " using ", input$method))
