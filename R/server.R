@@ -1,7 +1,7 @@
 dash_server <- function() {
   shinyServer(function(input, output) {
     getData <- reactive({
-      raw <- datasets[[input$dataSet]]
+      raw <- dataset
       dataStart <-
         c(lubridate::year(input$dataRange[1]), lubridate::month(input$dataRange[1]))
       dataEnd <-
@@ -69,14 +69,14 @@ dash_server <- function() {
     output$plotForecast <- renderPlot({
       monthly <- getProcessedWithoutStl()
       
-      trainStart <-
-        c(lubridate::year(input$trainRange[1]), lubridate::month(input$trainRange[1]))
-      trainEnd <-
-        c(lubridate::year(input$trainRange[2]), lubridate::month(input$trainRange[2]))
-      testStart <-
-        c(lubridate::year(input$testRange[1]), lubridate::month(input$testRange[1]))
-      testEnd <-
-        c(lubridate::year(input$testRange[2]), lubridate::month(input$testRange[2]))
+      trainStart <- c(lubridate::year(input$trainRange[1]), lubridate::month(input$trainRange[1]))
+      trainEnd <- c(lubridate::year(input$trainRange[2]), lubridate::month(input$trainRange[2]))
+      testStart <- c(lubridate::year(input$testRange[1]), lubridate::month(input$testRange[1]))
+      testEnd <- c(lubridate::year(input$testRange[2]), lubridate::month(input$testRange[2]))
+      print(trainStart)
+      print(trainEnd)
+      print(testStart)
+      print(testEnd)
       
       # split into 'test' and 'train' set
       trainData <- window(monthly, start = trainStart, end = trainEnd)
@@ -136,7 +136,7 @@ dash_server <- function() {
                                        h=length(testData))
       rValues$forecasted <- forecasted
       forecast::plot.forecast(forecasted,
-                    main = paste0("Forecasts for ", input$dataSet, " using ", input$method))
+                    main = paste0("Forecasts for using ", input$method))
       lines(testData, lty = 2, col = "red")
     })
     

@@ -1,5 +1,7 @@
 
-dash_ui <- function() {
+dash_ui <- function(dataset, start_date, end_date,
+                    train_date_start, train_date_end, 
+                    test_date_start, test_date_end) {
   shinyUI(fluidPage(
     theme = shinythemes::shinytheme('cosmo'),
     titlePanel("DataKind-BLR Time Series Forecasting Tool"),
@@ -8,11 +10,6 @@ dash_ui <- function() {
       tabsetPanel(
         tabPanel(
           title = 'Data and pre-processing',
-          fluidRow(selectInput(
-            "dataSet",
-            label = h5("Data Set"),
-            choices = c(names(datasets))
-          )),
           fluidRow(
             h5("Data Preprocessing Controls"),
             checkboxInput("cleanOutliers", "Remove Outliers", value = F),
@@ -29,27 +26,27 @@ dash_ui <- function() {
             dateRangeInput(
               "dataRange",
               "DataSet Range",
-              start  = "2012-01-01",
-              end    = "2016-07-01",
-              format = "mm-yyyy",
+              start  = start_date,
+              end    = end_date,
+              format = "dd-mm-yyyy",
               separator = " to ",
               startview = "year"
             ),
             dateRangeInput(
               "trainRange",
               "Training Set Range",
-              start  = "2012-01-01",
-              end    = "2015-06-01",
-              format = "mm-yyyy",
+              start  = train_date_start,
+              end    = train_date_end,
+              format = "dd-mm-yyyy",
               separator = " to ",
               startview = "year"
             ),
             dateRangeInput(
               "testRange",
               "Test Set Range",
-              start  = "2015-07-01",
-              end    = "2016-06-01",
-              format = "mm-yyyy",
+              start  = test_date_start,
+              end    = test_date_end,
+              format = "dd-mm-yyyy",
               separator = " to ",
               startview = "year"
             )
