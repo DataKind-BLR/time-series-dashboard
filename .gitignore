@@ -33,5 +33,5 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 
-timeSeriesDash/.Rbuildignore
-timeSeriesDash/timeSeriesDash.Rproj
+.Rbuildignore
+time-series-dashboard.Rproj
