@@ -2,3 +2,4 @@
 
 export(launch_app)
 export(load_ts_data)
+import(shiny)

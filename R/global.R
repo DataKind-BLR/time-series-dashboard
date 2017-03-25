@@ -1,3 +1,5 @@
+#' @import shiny
+
 #' @export
 load_ts_data <- function() {
 
