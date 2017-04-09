@@ -2,16 +2,16 @@
 
 Feel free to raise a Pull Request if you see an obvious bug and want to fix it.
 
-Before adding features, or adding documentation, [create an issue](issues) to discuss it.
+Before adding features, or adding documentation, [create an issue][issues] to discuss it.
 
-You can take a look at [issues](issues) to see how you can help. Once you raise a PR, assign the PR to one of the team members (see CONTRIBUTORS.md) for review.
+You can take a look at [issues][issues] to see how you can help. Once you raise a PR, assign the PR to one of the team members (see CONTRIBUTORS.md) for review.
 
 Before you raise a PR, please go through the section below to ensure that certain code standards are met.
 
 ## Code Guidelines
 
-- Python code should conform to [PEP-8](pep-8)
-- R code should conform to [R Style Guide](r-style)
+- Python code should conform to [PEP-8][pep-8]
+- R code should conform to [R Style Guide][r-style]
 
 ## Git Commit Guidelines
 - Commit messages should be concise
